@@ -87,8 +87,11 @@ export class HomeComponent implements OnInit {
 
   getCurrentUser(): any {
     // Get user info from token or localStorage
-    const userStr = localStorage.getItem('currentUser');
-    return userStr ? JSON.parse(userStr) : null;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userStr = localStorage.getItem('currentUser');
+      return userStr ? JSON.parse(userStr) : null;
+    }
+    return null;
   }
 
   getUserRole(): string {

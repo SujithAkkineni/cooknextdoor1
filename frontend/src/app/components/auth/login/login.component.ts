@@ -59,9 +59,11 @@ export class LoginComponent {
           }
 
           // Store authentication data
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
-          localStorage.setItem('userRole', response.user.role);
+          if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('currentUser', JSON.stringify(response.user));
+            localStorage.setItem('userRole', response.user.role);
+          }
 
           // Redirect based on role
           const role = response.user.role;

@@ -100,6 +100,9 @@ export class MealListComponent implements OnInit {
 
   getCurrentUserRole(): string | null {
     // You can enhance this to get user role from token
-    return localStorage.getItem('userRole') || null;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem('userRole') || null;
+    }
+    return null;
   }
 }

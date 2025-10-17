@@ -151,8 +151,11 @@ export class BuyerDashboardComponent implements OnInit {
   }
 
   getCurrentUser(): any {
-    const userStr = localStorage.getItem('currentUser');
-    return userStr ? JSON.parse(userStr) : null;
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userStr = localStorage.getItem('currentUser');
+      return userStr ? JSON.parse(userStr) : null;
+    }
+    return null;
   }
 
   logout(): void {

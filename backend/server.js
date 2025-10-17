@@ -15,12 +15,14 @@ app.use(express.json());
 
 // Serve static files from Angular build in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist/frontend')));
+  // Serve static files from the frontend build directory
+  const frontendBuildPath = path.join(__dirname, '../frontend/dist/cooknextdoor-frontend/browser');
+  app.use(express.static(frontendBuildPath));
 
   // Handle Angular routing - serve index.html for all non-API routes
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(__dirname, '../frontend/dist/frontend/index.html'));
+      res.sendFile(path.join(frontendBuildPath, 'index.html'));
     }
   });
 }

@@ -63,7 +63,7 @@ export class RegisterComponent {
           }
 
           // Store user data for demo mode
-          if (response.demo) {
+          if (response.demo && typeof window !== 'undefined' && window.localStorage) {
             localStorage.setItem('currentUser', JSON.stringify(response.user));
             localStorage.setItem('userRole', response.user.role);
           }
