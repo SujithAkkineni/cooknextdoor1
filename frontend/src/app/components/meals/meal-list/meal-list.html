@@ -1,0 +1,91 @@
+<div class="meal-list-container">
+  <div class="header-section">
+    <h1>Delicious Meals Available</h1>
+    <p>Discover amazing homemade meals from local chefs in your neighborhood</p>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading meals...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-container">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadMeals()">Try Again</button>
+  </div>
+
+  <!-- Meals Grid -->
+  <div *ngIf="!loading && !error" class="meals-grid">
+    <mat-card
+      *ngFor="let meal of meals"
+      class="meal-card"
+      [class.unavailable]="!meal.available">
+
+      <div class="meal-image">
+        <img [src]="meal.image" [alt]="meal.name" (error)="$event.target.src='https://via.placeholder.com/300x200?text=No+Image'">
+        <div class="availability-badge" [class.available]="meal.available">
+          <mat-icon>{{ meal.available ? 'check_circle' : 'cancel' }}</mat-icon>
+          <span>{{ meal.available ? 'Available' : 'Unavailable' }}</span>
+        </div>
+      </div>
+
+      <mat-card-content class="meal-content">
+        <mat-card-title class="meal-title">{{ meal.name }}</mat-card-title>
+        <p class="meal-description">{{ meal.description }}</p>
+
+        <div class="meal-details">
+          <div class="price-section">
+            <span class="price-label">Price:</span>
+            <span class="price-value">{{ formatPrice(meal.price) }}</span>
+          </div>
+
+          <div class="seller-info">
+            <mat-icon>person</mat-icon>
+            <span>{{ meal.seller.name }}</span>
+          </div>
+
+          <div class="location-info">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ meal.seller.location }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="meal-actions">
+        <button
+          mat-button
+          (click)="viewMealDetails(meal)"
+          matTooltip="View Details">
+          <mat-icon>visibility</mat-icon>
+          View Details
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="orderMeal(meal)"
+          [disabled]="!meal.available || !isLoggedIn"
+          matTooltip="{{ !isLoggedIn ? 'Please login to order' : (!meal.available ? 'Meal unavailable' : 'Order this meal') }}">
+          <mat-icon>shopping_cart</mat-icon>
+          {{ !isLoggedIn ? 'Login to Order' : 'Order Now' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && meals.length === 0" class="empty-state">
+    <mat-icon>restaurant</mat-icon>
+    <h3>No meals available</h3>
+    <p>Check back later for delicious homemade meals from local chefs!</p>
+  </div>
+
+  <!-- Demo Mode Notice -->
+  <div *ngIf="!loading && meals.length > 0 && isDemoMode" class="demo-notice">
+    <mat-icon>info</mat-icon>
+    <span>Running in demo mode - showing sample meals</span>
+  </div>
+</div>

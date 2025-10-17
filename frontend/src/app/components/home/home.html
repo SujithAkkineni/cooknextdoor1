@@ -1,0 +1,181 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <mat-card class="hero-card">
+    <mat-card-header>
+      <mat-card-title>Welcome to Cook Next Door</mat-card-title>
+      <mat-card-subtitle>Order delicious meals from your neighbors or sell your own!</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Connect with local cooks and enjoy fresh, homemade food delivered right to your door.</p>
+
+      <!-- User Status -->
+      <div *ngIf="isLoggedIn" class="user-welcome">
+        <mat-icon>person</mat-icon>
+        <span>Welcome back, {{ currentUser?.name }}!</span>
+        <mat-chip [color]="getUserRole() === 'seller' ? 'accent' : 'primary'">
+          {{ getUserRole() | titlecase }}
+        </mat-chip>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <div *ngIf="!isLoggedIn" class="auth-buttons">
+        <button mat-raised-button color="primary" (click)="navigateToRegister()">
+          <mat-icon>person_add</mat-icon>
+          Get Started
+        </button>
+        <button mat-button (click)="navigateToLogin()">
+          <mat-icon>login</mat-icon>
+          Login
+        </button>
+      </div>
+      <div *ngIf="isLoggedIn" class="dashboard-buttons">
+        <button mat-raised-button color="primary" (click)="navigateToMeals()">
+          <mat-icon>restaurant</mat-icon>
+          Browse Meals
+        </button>
+        <button mat-raised-button color="accent" [routerLink]="'/' + getUserRole() + '-dashboard'">
+          <mat-icon>dashboard</mat-icon>
+          Dashboard
+        </button>
+        <button mat-button (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          Logout
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Featured Meals Section -->
+  <div class="featured-section">
+    <h2>Featured Meals</h2>
+    <p>Try these popular dishes from our talented local chefs</p>
+
+    <div class="featured-meals">
+      <mat-card
+        *ngFor="let meal of featuredMeals"
+        class="featured-meal-card"
+        (click)="navigateToMeals()">
+
+        <div class="featured-meal-image">
+          <img [src]="meal.image" [alt]="meal.name">
+          <div class="featured-badge">
+            <mat-icon>star</mat-icon>
+            <span>{{ meal.rating }}</span>
+          </div>
+        </div>
+
+        <mat-card-content class="featured-meal-content">
+          <mat-card-title>{{ meal.name }}</mat-card-title>
+          <p class="featured-description">{{ meal.description }}</p>
+
+          <div class="featured-meal-details">
+            <div class="chef-info">
+              <mat-icon>person</mat-icon>
+              <span>{{ meal.chef }}</span>
+            </div>
+            <div class="price-info">
+              <span class="price">₹{{ meal.price }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="navigateToMeals(); $event.stopPropagation()">
+            Order Now
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <h2>How Cook Next Door Works</h2>
+
+    <div class="features-grid">
+      <mat-card class="feature-card">
+        <mat-card-header>
+          <div class="feature-icon">
+            <mat-icon>search</mat-icon>
+          </div>
+          <mat-card-title>Discover</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Browse through a variety of homemade meals from talented local cooks in your neighborhood.</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="feature-card">
+        <mat-card-header>
+          <div class="feature-icon">
+            <mat-icon>shopping_cart</mat-icon>
+          </div>
+          <mat-card-title>Order</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Place your order with just a few clicks and get fresh, homemade food delivered to your door.</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="feature-card">
+        <mat-card-header>
+          <div class="feature-icon">
+            <mat-icon>local_shipping</mat-icon>
+          </div>
+          <mat-card-title>Enjoy</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Receive your delicious meal and enjoy the authentic flavors of homemade cooking.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">500+</div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Local Chefs</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1000+</div>
+        <div class="stat-label">Meals Delivered</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">4.8★</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="cta-section">
+    <mat-card class="cta-card">
+      <mat-card-content>
+        <h3>Ready to start your culinary journey?</h3>
+        <p>Join our community of food lovers and talented cooks today!</p>
+        <div *ngIf="!isLoggedIn" class="cta-buttons">
+          <button mat-raised-button color="primary" (click)="navigateToRegister()">
+            Join as Buyer
+          </button>
+          <button mat-raised-button color="accent" (click)="navigateToRegister()">
+            Join as Seller
+          </button>
+        </div>
+        <div *ngIf="isLoggedIn" class="cta-buttons">
+          <button mat-raised-button color="primary" (click)="navigateToMeals()">
+            Browse Meals
+          </button>
+          <button mat-raised-button color="accent" [routerLink]="'/' + getUserRole() + '-dashboard'">
+            Go to Dashboard
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

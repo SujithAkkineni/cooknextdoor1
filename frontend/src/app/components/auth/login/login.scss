@@ -1,0 +1,102 @@
+.login-card {
+  max-width: 450px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.login-card mat-card-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-card mat-card-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: white;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.full-width mat-form-field {
+  .mat-mdc-form-field-subscript-wrapper {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.full-width input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 8px;
+  padding: 0.8rem;
+}
+
+.full-width input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.full-width .mat-mdc-form-field-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.full-width .mat-mdc-form-field-outline {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+button[type="submit"] {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+mat-card-actions {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+mat-card-actions p {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+mat-card-actions a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+mat-card-actions a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}

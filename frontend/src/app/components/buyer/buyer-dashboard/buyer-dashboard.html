@@ -1,0 +1,244 @@
+<div class="buyer-dashboard">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <h1>Buyer Dashboard</h1>
+      <p class="welcome-text">Welcome back, {{ currentUser?.name }}!</p>
+      <p class="dashboard-subtitle">Discover delicious meals and track your orders</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="browseAllMeals()">
+        <mat-icon>restaurant</mat-icon>
+        Browse Meals
+      </button>
+      <button mat-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading your dashboard...</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div *ngIf="!loading" class="stats-container">
+    <mat-card class="stat-card orders-stat">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>shopping_cart</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number">{{ stats.totalOrders }}</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card pending-stat">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number">{{ stats.pendingOrders }}</div>
+          <div class="stat-label">Pending</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card delivered-stat">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number">{{ stats.deliveredOrders }}</div>
+          <div class="stat-label">Delivered</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card meals-stat">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>favorite</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number">{{ stats.favoriteMeals }}</div>
+          <div class="stat-label">Available Meals</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Main Content Tabs -->
+  <div *ngIf="!loading" class="dashboard-content">
+    <mat-tab-group [(selectedIndex)]="activeTab" class="dashboard-tabs">
+
+      <!-- Recent Orders Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>shopping_bag</mat-icon>
+          Recent Orders ({{ stats.totalOrders }})
+        </ng-template>
+
+        <div class="tab-content">
+          <div class="section-header">
+            <h3>Your Recent Orders</h3>
+          </div>
+
+          <div *ngIf="recentOrders.length === 0" class="empty-state">
+            <mat-icon>shopping_bag</mat-icon>
+            <h4>No orders yet</h4>
+            <p>Start exploring delicious meals and place your first order!</p>
+            <button mat-raised-button color="primary" (click)="browseAllMeals()">
+              Browse Meals
+            </button>
+          </div>
+
+          <div *ngIf="recentOrders.length > 0" class="orders-list">
+            <mat-card *ngFor="let order of recentOrders" class="order-card" [class]="'status-' + order.status">
+              <mat-card-content>
+                <div class="order-header">
+                  <div class="order-info">
+                    <h4>{{ order.meal?.name }}</h4>
+                    <p class="order-seller">From: {{ order.seller?.name || 'Local Chef' }}</p>
+                    <p class="order-date">{{ order.createdAt | date:'medium' }}</p>
+                  </div>
+                  <div class="order-status">
+                    <mat-chip [class]="'status-' + order.status">
+                      {{ order.status | titlecase }}
+                    </mat-chip>
+                  </div>
+                </div>
+
+                <div class="order-details">
+                  <div class="order-quantity">Quantity: {{ order.quantity }}</div>
+                  <div class="order-total">Total: ₹{{ order.totalPrice }}</div>
+                </div>
+
+                <div class="order-actions">
+                  <button mat-button (click)="viewOrderDetails(order)">
+                    <mat-icon>visibility</mat-icon>
+                    View Details
+                  </button>
+                  <button mat-button color="primary" (click)="reorderMeal(order)">
+                    <mat-icon>repeat</mat-icon>
+                    Reorder
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Available Meals Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>restaurant</mat-icon>
+          Available Meals
+        </ng-template>
+
+        <div class="tab-content">
+          <div class="section-header">
+            <h3>Delicious Meals Available Now</h3>
+            <button mat-raised-button color="primary" (click)="browseAllMeals()">
+              View All Meals
+            </button>
+          </div>
+
+          <div *ngIf="availableMeals.length === 0" class="empty-state">
+            <mat-icon>restaurant</mat-icon>
+            <h4>No meals available</h4>
+            <p>Check back later for more delicious options!</p>
+          </div>
+
+          <div *ngIf="availableMeals.length > 0" class="meals-grid">
+            <mat-card *ngFor="let meal of availableMeals" class="meal-card">
+              <div class="meal-image">
+                <img [src]="meal.image" [alt]="meal.name" (error)="$event.target.src='https://via.placeholder.com/300x200?text=No+Image'">
+              </div>
+
+              <mat-card-content>
+                <mat-card-title>{{ meal.name }}</mat-card-title>
+                <p class="meal-description">{{ meal.description }}</p>
+
+                <div class="meal-details">
+                  <div class="meal-price">₹{{ meal.price }}</div>
+                  <div class="meal-chef">{{ meal.seller?.name }}</div>
+                </div>
+              </mat-card-content>
+
+              <mat-card-actions>
+                <button mat-raised-button color="primary" (click)="orderMeal(meal)">
+                  <mat-icon>shopping_cart</mat-icon>
+                  Order Now
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Favorite Meals Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>favorite</mat-icon>
+          Favorites
+        </ng-template>
+
+        <div class="tab-content">
+          <div class="section-header">
+            <h3>Your Favorite Meals</h3>
+          </div>
+
+          <div *ngIf="favoriteMeals.length === 0" class="empty-state">
+            <mat-icon>favorite_border</mat-icon>
+            <h4>No favorites yet</h4>
+            <p>Heart your favorite meals to see them here!</p>
+          </div>
+
+          <div *ngIf="favoriteMeals.length > 0" class="meals-grid">
+            <mat-card *ngFor="let meal of favoriteMeals" class="meal-card favorite">
+              <div class="meal-image">
+                <img [src]="meal.image" [alt]="meal.name" (error)="$event.target.src='https://via.placeholder.com/300x200?text=No+Image'">
+                <div class="favorite-badge">
+                  <mat-icon>favorite</mat-icon>
+                </div>
+              </div>
+
+              <mat-card-content>
+                <mat-card-title>{{ meal.name }}</mat-card-title>
+                <p class="meal-description">{{ meal.description }}</p>
+
+                <div class="meal-details">
+                  <div class="meal-price">₹{{ meal.price }}</div>
+                  <div class="meal-chef">{{ meal.seller?.name }}</div>
+                </div>
+              </mat-card-content>
+
+              <mat-card-actions>
+                <button mat-raised-button color="primary" (click)="orderMeal(meal)">
+                  <mat-icon>shopping_cart</mat-icon>
+                  Order Now
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+
+  <!-- Demo Mode Notice -->
+  <div class="demo-notice">
+    <mat-icon>info</mat-icon>
+    <span>Buyer Dashboard - Demo Mode</span>
+  </div>
+</div>
